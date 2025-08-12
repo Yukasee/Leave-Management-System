@@ -1,0 +1,15 @@
+# node
+node_modules/
+dist/
+.env
+npm-debug.log
+yarn-error.log
+
+# prisma
+prisma/dev.db
+/prisma/dev.db
+/src/generated/prisma/    # don't commit generated client
+
+# IDE/system
+.vscode/
+.DS_Store
