@@ -13,7 +13,7 @@ export default function AdminDepartments() {
             .then((data) => {
                 const uniqueDeps = Array.from(
                     new Set(data.map((emp: any) => emp.department).filter(Boolean))
-                );
+                ) as string[];
                 setDepartments(uniqueDeps);
             })
             .catch((err) => console.error(err));

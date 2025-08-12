@@ -31,7 +31,7 @@ export default function UpdateEmployee() {
                     defaultAnnualDays: data.defaultAnnualDays || 20,
                 });
             })
-            .catch((err) => setError("Failed to load employee data"));
+            .catch(() => setError("Failed to load employee data"));
     }, [id]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
