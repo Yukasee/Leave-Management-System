@@ -2,7 +2,7 @@ import { Response } from "express";
 import prisma from "../utils/prismaClient";
 import { AuthRequest } from "../middlewares/auth";
 
-// Admin Stats
+
 export const getAdminStats = async (req: AuthRequest, res: Response) => {
     try {
         if (req.user?.role !== "ADMIN") {
@@ -10,8 +10,6 @@ export const getAdminStats = async (req: AuthRequest, res: Response) => {
         }
 
         const totalEmployees = await prisma.employee.count();
-
-        // Count unique departments from employee table
         const departments = await prisma.employee.findMany({
             select: { department: true },
             distinct: ["department"]

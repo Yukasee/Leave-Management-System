@@ -2,9 +2,7 @@ import { Response } from "express";
 import prisma from "../utils/prismaClient";
 import { AuthRequest } from "../middlewares/auth";
 
-/**
- * Get all employees (Admin only)
- */
+
 export const getAllEmployees = async (_req: AuthRequest, res: Response) => {
     try {
         const employees = await prisma.employee.findMany({
@@ -14,7 +12,7 @@ export const getAllEmployees = async (_req: AuthRequest, res: Response) => {
                 email: true,
                 department: true,
                 joiningDate: true,
-                defaultAnnualDays: true, // Leave balance
+                defaultAnnualDays: true, 
                 createdAt: true,
                 user: { select: { id: true, email: true, role: true } },
                 leaves: true
@@ -32,9 +30,6 @@ export const getAllEmployees = async (_req: AuthRequest, res: Response) => {
     }
 };
 
-/**
- * Get a single employee (Admin or Self)
- */
 export const getEmployeeById = async (req: AuthRequest, res: Response) => {
     try {
         const employeeId = parseInt(req.params.id);
@@ -53,7 +48,7 @@ export const getEmployeeById = async (req: AuthRequest, res: Response) => {
                 email: true,
                 department: true,
                 joiningDate: true,
-                defaultAnnualDays: true, // Leave balance
+                defaultAnnualDays: true, 
                 createdAt: true,
                 user: { select: { id: true, email: true, role: true } },
                 leaves: true
@@ -71,9 +66,6 @@ export const getEmployeeById = async (req: AuthRequest, res: Response) => {
     }
 };
 
-/**
- * Update an employee (Admin only)
- */
 export const updateEmployee = async (req: AuthRequest, res: Response) => {
     try {
         const employeeId = parseInt(req.params.id);
@@ -107,9 +99,6 @@ export const updateEmployee = async (req: AuthRequest, res: Response) => {
     }
 };
 
-/**
- * Delete an employee (Admin only)
- */
 export const deleteEmployee = async (req: AuthRequest, res: Response) => {
     try {
         const employeeId = parseInt(req.params.id);

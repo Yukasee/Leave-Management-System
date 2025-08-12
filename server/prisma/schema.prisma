@@ -43,10 +43,8 @@ model Employee {
   joiningDate       DateTime
   defaultAnnualDays Int      @default(20)
   createdAt         DateTime @default(now())
-
   userId            Int?     @unique
   user              User?    @relation(fields: [userId], references: [id])
-
   leaves            Leave[]
 }
 

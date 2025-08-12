@@ -1,30 +1,36 @@
 // src/App.tsx
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
-import Login from "./pages/Login";
-import RegisterEmployee from "./pages/RegisterEmployee";
-import AdminDashboard from "./pages/AdminDashboard";
-import EmployeeDashboard from "./pages/EmployeeDashboard";
-import AdminEmployees from "./pages/AdminEmployees";
-import AdminDepartments from "./pages/AdminDepartment";
-import AdminLeaves from "./pages/AdminLeaves";
+import Login from "./pages/Authentication/Login";
+import AdminDashboard from "./pages/AdminPages/AdminDashboard";
+import EmployeeDashboard from "./pages/EmployeePages/EmployeeDashboard";
+import AdminEmployees from "./pages/AdminPages/AdminEmployees";
+import AdminDepartments from "./pages/AdminPages/AdminDepartment";
+import AdminLeaves from "./pages/AdminPages/AdminLeaves";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AddEmployee from "./pages/AdminPages/AdminAddEmployee";
+import UpdateEmployee from "./pages/AdminPages/AdminUpdate";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          {/* Public */}
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login/>}/>
 
-          {/* Admin-only */}
-          <Route
-            path="/register"
+         
+          <Route path="/admin/employees/add"
             element={
               <ProtectedRoute role="ADMIN">
-                <RegisterEmployee />
+                <AddEmployee />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/admin/employees/update/:id"
+            element={
+              <ProtectedRoute role="ADMIN">
+                <UpdateEmployee />
               </ProtectedRoute>
             }
           />
@@ -61,7 +67,6 @@ export default function App() {
             }
           />
 
-          {/* Employee-only */}
           <Route
             path="/employee/dashboard"
             element={
@@ -71,7 +76,6 @@ export default function App() {
             }
           />
 
-          {/* Fallback */}
           <Route path="/unauthorized" element={<h1>Unauthorized Access</h1>} />
         </Routes>
       </BrowserRouter>

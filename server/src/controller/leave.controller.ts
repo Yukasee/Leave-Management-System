@@ -2,9 +2,6 @@ import { Response } from "express";
 import prisma from "../utils/prismaClient";
 import { AuthRequest } from "../middlewares/auth";
 
-/**
- * Employee applies for leave
- */
 export const applyLeave = async (req: AuthRequest, res: Response) => {
     try {
         if (!req.user || req.user.role !== "EMPLOYEE") {
@@ -40,8 +37,6 @@ export const applyLeave = async (req: AuthRequest, res: Response) => {
                 error: `You cannot apply for leave before your joining date (${employee.joiningDate.toISOString().split('T')[0]})`
             });
         }
-        
-        // Check overlapping leaves for same employee
         const overlapping = await prisma.leave.findFirst({
             where: {
                 employeeId: req.user.employeeId!,
@@ -81,9 +76,6 @@ export const applyLeave = async (req: AuthRequest, res: Response) => {
     }
 };
 
-/**
- * Get leaves (Employee = own leaves, Admin = all leaves)
- */
 export const getLeaves = async (req: AuthRequest, res: Response) => {
     try {
         let leaves;
@@ -107,9 +99,6 @@ export const getLeaves = async (req: AuthRequest, res: Response) => {
     }
 };
 
-/**
- * Admin updates leave status (approve/reject)
- */
 export const updateLeaveStatus = async (req: AuthRequest, res: Response) => {
     try {
         if (!req.user || req.user.role !== "ADMIN") {
@@ -132,7 +121,6 @@ export const updateLeaveStatus = async (req: AuthRequest, res: Response) => {
             return res.status(404).json({ error: "Leave not found" });
         }
 
-        // Deduct balance only for APPROVED annual leaves
         if (status === "APPROVED" && leave.type === "ANNUAL") {
             const employee = await prisma.employee.findUnique({
                 where: { id: leave.employeeId }

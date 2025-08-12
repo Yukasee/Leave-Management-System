@@ -4,9 +4,6 @@ import jwt from "jsonwebtoken";
 import prisma from "../utils/prismaClient";
 import { AuthRequest } from "../middlewares/auth";
 
-/**
- * Admin creates employee account
- */
 export const createEmployeeAccount = async (req: AuthRequest, res: Response) => {
     try {
         const { name, email, department, joiningDate, password, defaultAnnualDays } = req.body;
@@ -15,10 +12,8 @@ export const createEmployeeAccount = async (req: AuthRequest, res: Response) => 
             return res.status(400).json({ error: "Missing required fields" });
         }
 
-        // Hash password
         const passwordHash = await bcrypt.hash(password, 10);
 
-        // Create employee
         const employee = await prisma.employee.create({
             data: {
                 name,
@@ -29,7 +24,6 @@ export const createEmployeeAccount = async (req: AuthRequest, res: Response) => 
             },
         });
 
-        // Create user linked to employee
         const user = await prisma.user.create({
             data: {
                 email,
@@ -39,7 +33,6 @@ export const createEmployeeAccount = async (req: AuthRequest, res: Response) => 
             },
         });
 
-        // Link back userId in employee
         await prisma.employee.update({
             where: { id: employee.id },
             data: { userId: user.id },
@@ -55,9 +48,7 @@ export const createEmployeeAccount = async (req: AuthRequest, res: Response) => 
     }
 };
 
-/**
- * User login (Admin or Employee)
- */
+
 export const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body;
@@ -94,9 +85,6 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 
-/**
- * Get logged-in user profile
- */
 export const getProfile = async (req: AuthRequest, res: Response) => {
     try {
         if (!req.user) return res.status(401).json({ error: "Unauthorized" });

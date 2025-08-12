@@ -1,5 +1,5 @@
-// src/context/AuthContext.tsx
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
 import api from "../api/axios";
 
 interface User {
@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role", res.data.role);
         api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
-        setUser(res.data); // Make sure backend returns id, email, role, employeeId
+        setUser(res.data); 
     };
 
     const logout = () => {
@@ -36,13 +36,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         delete api.defaults.headers.common["Authorization"];
         setUser(null);
     };
-
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
             api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
             api
-                .get("http://localhost:8000/auth/me")
+                .get(BACKEND_URL+"/auth/me")
                 .then(res => setUser(res.data))
                 .catch(() => logout())
                 .finally(() => setLoading(false));
