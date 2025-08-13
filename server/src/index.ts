@@ -23,6 +23,13 @@ app.get('/', (req: Request, res: Response) => {
     res.send("Hii from Server");
 });
 
+const __dirnamePath = path.resolve();
+app.use(express.static(path.join(__dirnamePath, "client/dist"))); // Adjust if build folder is different
+
+app.get("*", (_req, res) => {
+    res.sendFile(path.join(__dirnamePath, "client/dist", "index.html"));
+});
+
 app.use((err: any, _req: Request, res: Response, _next: any) => {
     console.error(err);
     res.status(err.status || 500).json({ error: err.message || "Internal server error" });
