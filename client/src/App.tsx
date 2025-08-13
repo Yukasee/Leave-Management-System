@@ -75,7 +75,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
+          
           <Route path="/unauthorized" element={<h1>Unauthorized Access</h1>} />
         </Routes>
       </BrowserRouter>

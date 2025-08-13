@@ -20,7 +20,7 @@ export default function ProtectedRoute({ children, role }: Props) {
         return <Navigate to="/" />;
     }
 
-    if (role && user.role !== role) {
+    if (role && user.role.toUpperCase() !== role) {
         return <Navigate to="/unauthorized" />;
     }
 

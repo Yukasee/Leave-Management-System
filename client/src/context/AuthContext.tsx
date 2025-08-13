@@ -6,7 +6,7 @@ interface User {
     id: number;
     email: string;
     role: "ADMIN" | "EMPLOYEE";
-    employeeId?: number;
+    employeeId?: number | null;
 }
 
 interface AuthContextType {
@@ -22,28 +22,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
     const login = async (email: string, password: string) => {
-        const res = await api.post("/auth/login", { email, password });
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("role", res.data.role);
-        api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
-        setUser(res.data); 
+        try {
+            // 1️⃣ Login request
+            const res = await api.post("/auth/login", { email, password });
+
+            // 2️⃣ Save token in localStorage
+            localStorage.setItem("token", res.data.token);
+            
+            api.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
+
+            // 3️⃣ Fetch full user details
+            const meRes = await api.get(`${BACKEND_URL}/auth/me`);
+            localStorage.setItem("user", JSON.stringify(meRes.data));
+            localStorage.setItem('role', meRes.data.role);
+            setUser(meRes.data);
+        } catch (err) {
+            console.error("Login failed:", err);
+            throw err;
+        }
     };
 
     const logout = () => {
         localStorage.removeItem("token");
-        localStorage.removeItem("role");
+        localStorage.removeItem("user");
         delete api.defaults.headers.common["Authorization"];
         setUser(null);
     };
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+    // Load user on first render
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
             api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-            api
-                .get(BACKEND_URL+"/auth/me")
-                .then(res => setUser(res.data))
+            api.get(`${BACKEND_URL}/auth/me`)
+                .then(res => {
+                    localStorage.setItem("user", JSON.stringify(res.data));
+                    setUser(res.data);
+                })
                 .catch(() => logout())
                 .finally(() => setLoading(false));
         } else {

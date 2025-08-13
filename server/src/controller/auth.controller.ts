@@ -71,7 +71,7 @@ export const login = async (req: Request, res: Response) => {
             {
                 id: user.id,
                 email: user.email,
-                role: user.role,
+                role: user.role.toUpperCase(),
                 employeeId: user.employee?.id || undefined,
             },
             process.env.JWT_SECRET as string,
@@ -87,16 +87,25 @@ export const login = async (req: Request, res: Response) => {
 
 export const getProfile = async (req: AuthRequest, res: Response) => {
     try {
-        if (!req.user) return res.status(401).json({ error: "Unauthorized" });
+        if (!req.user) {
+            return res.status(401).json({ error: "Unauthorized" });
+        }
 
         const user = await prisma.user.findUnique({
             where: { id: req.user.id },
             include: { employee: true },
         });
 
-        if (!user) return res.status(404).json({ error: "User not found" });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
 
-        res.json(user);
+        res.json({
+            id: user.id,
+            email: user.email,
+            role: user.role.toUpperCase(), 
+            employeeId: user.employee?.id || null
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: "Internal server error" });
