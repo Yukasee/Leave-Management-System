@@ -5,7 +5,7 @@ import employeesRouter from "./routes/employees.routes";
 import leaveRouter from "./routes/leave.routes";
 import adminRoutes from "./routes/admin.routes";
 import cors from "cors";
-
+import path = require("path");
 dotenv.config({});
 
 
@@ -24,8 +24,7 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 const __dirnamePath = path.resolve();
-app.use(express.static(path.join(__dirnamePath, "client/dist"))); // Adjust if build folder is different
-
+app.use(express.static(path.join(__dirnamePath, "client/dist"))); 
 app.get("*", (_req, res) => {
     res.sendFile(path.join(__dirnamePath, "client/dist", "index.html"));
 });
